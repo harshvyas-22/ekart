@@ -10,10 +10,12 @@ const app = express();
 const port = process.env.PORT || 3000;
 const __dirname = path.resolve();
 
-app.use(cors({
-  origin:true,
-  credentials:true
-}));
+app.use(
+  cors({
+    origin: "https://ekart-3.onrender.com/",
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 
