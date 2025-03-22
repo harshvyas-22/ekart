@@ -10,7 +10,7 @@ export const useProductStore = create((set) => ({
 
     console.log("Request payload:", newProduct); // Log the request payload
 
-    const response = await fetch("http://localhost:3000/products", {
+    const response = await fetch("https://ekart-4.onrender.com/products", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -33,7 +33,7 @@ export const useProductStore = create((set) => ({
   },
   updateProduct: async (updatedProduct) => {
     const response = await fetch(
-      `http://localhost:3000/products/${updatedProduct._id}`,
+      `https://ekart-4.onrender.com/products/${updatedProduct._id}`,
       {
         method: "PUT",
         headers: {
@@ -61,7 +61,7 @@ export const useProductStore = create((set) => ({
     return { success: true, message: "Product updated successfully" };
   },
   deleteProduct: async (id) => {
-    const response = await fetch(`http://localhost:3000/products/${id}`, {
+    const response = await fetch(`https://ekart-4.onrender.com/products/${id}`, {
       method: "DELETE",
     });
 
@@ -79,7 +79,7 @@ export const useProductStore = create((set) => ({
     return { success: true, message: "Product deleted successfully" };
   },
   fetchProducts: async () => {
-    const response = await fetch("http://localhost:3000/products");
+    const response = await fetch("https://ekart-4.onrender.com/products");
 
     if (!response.ok) {
       return { success: false, message: "Failed to fetch products" };
