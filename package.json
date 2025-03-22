@@ -1,23 +1,23 @@
 {
-  "name": "ekart",
-  "version": "1.0.0",
-  "main": "backend/server.js",
-  "scripts": {
-    "dev": "npx cross-env NODE_ENV=development nodemon backend/server.js",
-    "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend",
-    "start": "npx cross-env NODE_ENV=production node backend/server.js"
-  },
-  "type": "module",
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "cors": "^2.8.5",
-    "cross-env": "^7.0.3",
-    "dotenv": "^16.4.7",
-    "express": "^4.21.2",
-    "mongoose": "^8.12.1",
-    "nodemon": "^3.1.9"
-  }
+	"name": "ekart",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"dev": "NODE_ENV=development nodemon backend/server.js",
+		"build": "npm install && npm install --prefix frontend && npm run build --prefix frontend",
+		"start": "NODE_ENV=production node backend/server.js"
+	},
+	"type": "module",
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"dotenv": "^16.4.5",
+		"express": "^4.19.2",
+		"mongoose": "^8.5.1"
+	},
+	"devDependencies": {
+		"nodemon": "^3.1.4"
+	}
 }
