@@ -1,7 +1,7 @@
 {
   "name": "ekart",
   "version": "1.0.0",
-  "main": "backend/server.js",
+  "main": "index.js",
   "scripts": {
     "dev": "NODE_ENV=development nodemon backend/server.js",
     "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend",
