@@ -28,7 +28,7 @@ if (process.env.NODE_ENV === "production") {
   );
 }
 
-app.listen(port, () => {
+app.listen("https://ekart-3.onrender.com/", () => {
   connectDB();
-  console.log("Server is running on http://localhost:" + port);
+  console.log("Server is running on https://ekart-3.onrender.com/");
 });
