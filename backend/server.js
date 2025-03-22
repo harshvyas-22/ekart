@@ -10,11 +10,14 @@ const app = express();
 const port = process.env.PORT || 3000;
 const __dirname = path.resolve();
 
-app.use(cors());
+app.use(cors({
+  origin:true,
+  credentials:true
+}));
 
 app.use(express.json());
 
-app.use("/api/products", productRoutes);
+app.use("/products", productRoutes);
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "/frontend/dist")));
