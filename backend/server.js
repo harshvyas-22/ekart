@@ -18,7 +18,7 @@ app.use(
 );
 
 app.use(express.json());
-
+app.use("/uploads", express.static(path.join(__dirname, "uploads"))); 
 app.use("/products", productRoutes);
 
 if (process.env.NODE_ENV === "production") {

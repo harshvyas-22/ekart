@@ -1,14 +1,38 @@
 import express from "express";
-import mongoose, { get } from "mongoose";
-import Product from "../models/product.model.js";
-import { createProduct, deleteProduct, getProducts, updateProduct } from "../controllers/product.controller.js";
+import multer from "multer";
+import path from "path";
+import { fileURLToPath } from "url";
+import fs from "fs";
+import {
+  createProduct,
+  deleteProduct,
+  getProducts,
+  updateProduct,
+} from "../controllers/product.controller.js";
+
 const router = express.Router();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-router.post('/',createProduct );
+const uploadsDir = path.join(__dirname, "../uploads");
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
 
-router.delete('/:id',deleteProduct);
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadsDir); 
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`); 
+  },
+});
 
-router.get('/', getProducts);
+const upload = multer({ storage });
 
-router.put('/:id', updateProduct);
+router.post("/", upload.single("image"), createProduct);
+router.delete("/:id", deleteProduct);
+router.get("/", getProducts);
+router.put("/:id", upload.single("image"), updateProduct); 
+
 export default router;

@@ -3,33 +3,34 @@ import { create } from "zustand";
 export const useProductStore = create((set) => ({
   products: [],
   setProducts: (products) => set({ products }),
-  createProduct: async (newProduct) => {
-    if (!newProduct.name || !newProduct.price || !newProduct.image) {
-      return { success: false, message: "All fields are required" };
+  createProduct: async (formData) => {
+    try {
+      const response = await fetch("https://ekart-4.onrender.com/products", {
+        method: "POST",
+        body: formData,
+      });
+
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        throw new Error("Unexpected response format");
+      }
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        console.error("Server Error:", data);
+        return {
+          success: false,
+          message: data.message || "Failed to create product",
+        };
+      }
+
+      set((state) => ({ products: [...state.products, data.data] }));
+      return { success: true, message: "Product created successfully" };
+    } catch (error) {
+      console.error("Network Error:", error);
+      return { success: false, message: "Network error occurred" };
     }
-
-    console.log("Request payload:", newProduct); // Log the request payload
-
-    const response = await fetch("https://ekart-4.onrender.com/products", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newProduct),
-    });
-
-    const data = await response.json();
-    console.log("Server response:", data); // Log the server response
-
-    if (!response.ok) {
-      return {
-        success: false,
-        message: data.message || "Failed to create product",
-      };
-    }
-
-    set((state) => ({ products: [...state.products, data.data] }));
-    return { success: true, message: "Product created successfully" };
   },
   updateProduct: async (updatedProduct) => {
     const response = await fetch(
@@ -44,7 +45,7 @@ export const useProductStore = create((set) => ({
     );
 
     const data = await response.json();
-    console.log("Server response:", data); // Log the server response
+    console.log("Server response:", data); 
 
     if (!response.ok) {
       return {
@@ -61,9 +62,12 @@ export const useProductStore = create((set) => ({
     return { success: true, message: "Product updated successfully" };
   },
   deleteProduct: async (id) => {
-    const response = await fetch(`https://ekart-4.onrender.com/products/${id}`, {
-      method: "DELETE",
-    });
+    const response = await fetch(
+      `https://ekart-4.onrender.com/products/${id}`,
+      {
+        method: "DELETE",
+      }
+    );
 
     if (!response.ok) {
       const data = await response.json();
