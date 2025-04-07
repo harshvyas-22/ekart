@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import { connectDB } from "./config/db.js";
 import productRoutes from "./routes/product.routes.js";
+import authRoutes from "./routes/auth.routes.js";
 import cors from "cors";
 import path from "path";
 
@@ -18,8 +19,9 @@ app.use(
 );
 
 app.use(express.json());
-app.use("/uploads", express.static(path.join(__dirname, "uploads"))); 
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/products", productRoutes);
+app.use("/auth", authRoutes);
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "/frontend/dist")));

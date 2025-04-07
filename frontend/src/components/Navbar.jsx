@@ -26,7 +26,12 @@ export const Navbar = () => {
           >
             Create Product
           </Link>
-
+          <Link
+            to="/login"
+            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+          >
+            Login
+          </Link>
           <button
             onClick={toggleTheme}
             className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 dark:bg-gray-200 dark:text-black dark:hover:bg-gray-300 transition flex items-center gap-2"
