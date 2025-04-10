@@ -11,8 +11,6 @@ eKart is a full-stack e-commerce application built with modern technologies like
 - **Cart Functionality**: Add and remove products from the cart.
 - **Home Button**: Navigate back to the homepage easily.
 - **Notifications**: Toast notifications for user feedback.
-- **Dark Mode Removed**: Simplified design by removing dark mode toggle.
-
 ## Technologies Used
 
 ### Backend
