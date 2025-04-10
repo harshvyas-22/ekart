@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-const BASE_URL = "https://ekart-4.onrender.com/";
+const BASE_URL = "https://ekart-4.onrender.com";
 
 export const useProductStore = create((set, get) => ({
   products: [],
