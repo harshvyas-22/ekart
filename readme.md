@@ -1,6 +1,6 @@
 # eKart
 
-eKart is a full-stack e-commerce application built with modern technologies like Node.js, Express, MongoDB, and React. It supports product management, image uploads, and a responsive design with dark mode.
+eKart is a full-stack e-commerce application built with modern technologies like Node.js, Express, MongoDB, and React. It supports product management, image uploads, and a responsive design.
 
 ## Features
 
@@ -8,8 +8,10 @@ eKart is a full-stack e-commerce application built with modern technologies like
 - **Product Management**: Create, edit, delete, and list products.
 - **Image Uploads**: Upload product images using Multer and Cloudinary.
 - **Responsive Design**: Built with Tailwind CSS for mobile-first responsiveness.
-- **Dark Mode**: Toggle between light and dark themes.
+- **Cart Functionality**: Add and remove products from the cart.
+- **Home Button**: Navigate back to the homepage easily.
 - **Notifications**: Toast notifications for user feedback.
+- **Dark Mode Removed**: Simplified design by removing dark mode toggle.
 
 ## Technologies Used
 
@@ -110,7 +112,6 @@ The application is configured for deployment on Render. Ensure the `.env` file i
 - **Product List**: View all products with options to edit or delete.
 - **Add Product**: Create a new product with an image upload.
 - **Edit Product**: Update product details.
-- **Dark Mode**: Toggle between light and dark themes.
 
 ## License
 
