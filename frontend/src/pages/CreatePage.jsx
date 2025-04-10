@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { useProductStore } from "../store/product";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 export const CreatePage = () => {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const [product, setProduct] = useState({
     name: "",
     price: "",
@@ -20,10 +19,9 @@ export const CreatePage = () => {
     }
   };
 
-  const { createProduct } = useProductStore();
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!product.name || !product.price || !product.image) {
       toast.error("All fields are required!");
       return;
@@ -35,13 +33,24 @@ export const CreatePage = () => {
     formData.append("image", product.image);
 
     try {
-      const { success, message } = await createProduct(formData);
-      if (success) {
+      const token = localStorage.getItem("token"); 
+
+      const response = await fetch("/api/products", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`, 
+        },
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
         toast.success("Product added successfully! 🎉");
         setProduct({ name: "", price: "", image: null });
-        navigate("/"); 
+        navigate("/");
       } else {
-        toast.error(`Error: ${message}`);
+        toast.error(`Error: ${data.message}`);
       }
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -53,12 +62,7 @@ export const CreatePage = () => {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6 text-center">Add Product</h2>
-        <form
-          action={"/"}
-          method="post"
-          onSubmit={handleSubmit}
-          encType="multipart/form-data"
-        >
+        <form onSubmit={handleSubmit} encType="multipart/form-data">
           <div className="mb-4">
             <label className="block text-gray-700 mb-2" htmlFor="name">
               Name

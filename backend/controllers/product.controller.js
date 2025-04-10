@@ -5,23 +5,19 @@ import fs from "fs";
 import dotenv from "dotenv";
 
 dotenv.config();
+
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
-
 export const createProduct = async (req, res) => {
-  console.log("Request Body:", req.body);
-  console.log("Uploaded File:", req.file);
-
   const { name, price } = req.body;
 
   if (!name || !price || !req.file) {
-    console.error("Validation Error: Missing fields or file upload failed");
     return res.status(400).json({
       success: false,
-      message: "Please fill all fields and upload an image",
+      message: "Please provide name, price, and image",
     });
   }
 
@@ -31,98 +27,107 @@ export const createProduct = async (req, res) => {
     });
 
     fs.unlink(req.file.path, (err) => {
-      if (err) {
-        console.error("Error deleting file:", err);
-      } else {
-        console.log("Local file deleted:", req.file.path);
-      }
+      if (err) console.error("File delete error:", err);
     });
 
     const newProduct = new Product({
+      user: req.user?._id,
       name,
       price,
       image: uploadResult.secure_url,
     });
 
     await newProduct.save();
+
     res.status(201).json({
       success: true,
       data: newProduct,
       message: "Product created successfully",
     });
   } catch (err) {
-    console.error("Error:", err);
-    res.status(500).json({ success: false, message: "Internal server error" });
+    console.error("Create Product Error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
-
 export const deleteProduct = async (req, res) => {
-  const id = req.params.id;
+  const { id } = req.params;
+
   try {
-    const product = await Product.findByIdAndDelete(id);
+    const product = await Product.findById(id);
     if (!product) {
       return res
         .status(404)
         .json({ success: false, message: "Product not found" });
     }
-    res
-      .status(200)
-      .json({ success: true, message: "Product deleted successfully" });
+
+    if (product.user.toString() !== req.user?._id.toString()) {
+      return res
+        .status(403)
+        .json({ success: false, message: "Unauthorized access" });
+    }
+
+    await product.deleteOne();
+
+    res.status(200).json({
+      success: true,
+      message: "Product deleted successfully",
+    });
   } catch (err) {
-    res.status(500).json({ success: false, message: "Internal server error" });
+    console.error("Delete Product Error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
 export const updateProduct = async (req, res) => {
-  const id = req.params.id;
+  const { id } = req.params;
   const { name, price } = req.body;
-
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res
-      .status(404)
-      .json({ success: false, message: "Invalid product id" });
+      .status(400)
+      .json({ success: false, message: "Invalid product ID" });
   }
-
   try {
-    let image;
+    const product = await Product.findById(id);
+    if (!product) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found" });
+    }
+    if (product.user._id.toString() !== req.user._id.toString()) {
+      return res
+        .status(403)
+        .json({ success: false, message: "Unauthorized access" });
+    }
     if (req.file) {
       const uploadResult = await cloudinary.uploader.upload(req.file.path, {
         folder: "products",
       });
 
       fs.unlink(req.file.path, (err) => {
-        if (err) {
-          console.error("Error deleting file:", err);
-        } else {
-          console.log("Local file deleted:", req.file.path);
-        }
+        if (err) console.error("Error deleting file:", err);
       });
-
-      image = uploadResult.secure_url;
+      product.image = uploadResult.secure_url;
     }
+    product.name = name || product.name;
+    product.price = price || product.price;
 
-    const updatedProduct = await Product.findByIdAndUpdate(
-      id,
-      { name, price, ...(image && { image }) },
-      { new: true }
-    );
-
+    const updatedProduct = await product.save();
     res.status(200).json({
       success: true,
       data: updatedProduct,
       message: "Product updated successfully",
     });
   } catch (err) {
-    console.error("Error:", err);
-    res.status(500).json({ success: false, message: "Internal server error" });
+    console.error("Update Product Error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
-
 export const getProducts = async (req, res) => {
   try {
-    const products = await Product.find({});
+    const products = await Product.find().populate("user", "name email");
     res.status(200).json({ success: true, data: products });
   } catch (err) {
-    res.status(500).json({ success: false, message: "Internal server error" });
+    console.error("Get Products Error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
